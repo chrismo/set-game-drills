@@ -1,6 +1,11 @@
 document.querySelector('input#yes').addEventListener('click', yes);
 document.querySelector('input#no').addEventListener('click', no);
 
+const fills = ["solid", "striped", "clear"];
+const shapes = ["squiggle", "diamond", "pill"];
+const colors = ["red", "purple", "green"];
+const numbers = [1, 2, 3];
+
 let cards = {};
 let currentTuple = [];
 generateCards();
@@ -66,6 +71,7 @@ function tupleIsSet() {
   return !((result.fills.length === 2) || (result.colors.length === 2) || (result.shapes.length === 2) || (result.numbers.length === 2));
 }
 
+// min..max inclusive
 function getRandomInt(min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -83,11 +89,6 @@ function randomTupleIndexes() {
 }
 
 function generateCards() {
-  let fills = ["solid", "striped", "clear"];
-  let shapes = ["squiggle", "diamond", "pill"];
-  let colors = ["red", "purple", "green"];
-  let numbers = [1, 2, 3];
-
   let cardIndex = 1;
   fills.forEach(fill => shapes.forEach(shape => colors.forEach(color => numbers.forEach(number => {
     cards[cardIndex] = {
@@ -108,8 +109,13 @@ function loadTuple() {
     div.removeChild(div.firstChild);
   }
 
-  indexes = randomTupleIndexes();
-  currentTuple = indexes.map(cardIndex => cards[cardIndex]);
+  // fully random creates a real set very rarely
+  if (getRandomInt(1, 4) === 1) {
+    currentTuple = makeSet();
+  } else {
+    indexes = randomTupleIndexes();
+    currentTuple = indexes.map(cardIndex => cards[cardIndex]);
+  }
 
   renderTuple(div);
 }
@@ -124,4 +130,43 @@ function renderTuple(div) {
     img.title = cardDescription;
     div.appendChild(img);
   });
+}
+
+function makeSet() {
+  // method already ensures no duplicates
+  let indexes = randomTupleIndexes(), cardA, cardB, cardC;
+
+  cardA = cards[indexes[0]];
+  cardB = cards[indexes[1]];
+  cardC = {
+    fill: "",
+    shape: "",
+    color: "",
+    number: 0
+  };
+
+  for (const [key, value] of Object.entries({
+    fill: fills,
+    color: colors,
+    shape: shapes,
+    number: numbers,
+  })) {
+    if (cardA[key] !== cardB[key]) {
+      cardC[key] = unusedElement(value, cardA[key], cardB[key]);
+    } else {
+      cardC[key] = cardA[key];
+    }
+  }
+
+  for (const [cardIndex, card] of Object.entries(cards)) {
+    if ((card.fill === cardC.fill) && (card.shape === cardC.shape) && (card.color === cardC.color) && (card.number === cardC.number)) {
+      cardC = card;
+    }
+  }
+
+  return [cardA, cardB, cardC];
+}
+
+function unusedElement(ary, valueA, valueB) {
+  return ary.filter(value => value !== valueA && value !== valueB)[0];
 }
