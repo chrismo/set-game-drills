@@ -60,12 +60,10 @@ function tupleIsSet() {
     if (result.numbers.indexOf(card.number) === -1) result.numbers.push(card.number);
   });
 
-  // all attributes should be the same (length == 1) or different (length == 3)
-  if ((result.fills.length === 2) || (result.colors.length === 2) || (result.shapes.length === 2) || (result.numbers.length === 2)) {
-    return false;
-  }
+  console.log(result);
 
-  return true;
+  // all attributes should be the same (length == 1) or different (length == 3)
+  return !((result.fills.length === 2) || (result.colors.length === 2) || (result.shapes.length === 2) || (result.numbers.length === 2));
 }
 
 function getRandomInt(min, max) {
