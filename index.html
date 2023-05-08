@@ -1,29 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <title>Home</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width"/>
     <!--
       Need a visual blank slate?
       Remove all code in `styles.css`!
     -->
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css"/>
     <script type="module" src="script.js"></script>
-  </head>
-  <body>
-    <nav>
-    </nav>
-    <main>
-      <h1>Set Game Drills</h1>
+</head>
+<body>
+<nav>
+</nav>
+<main>
+    <h1>Set Game Drills</h1>
 
-      <input type="button" value="New Tuple">
+    <span style="horiz-align: center">
+      <input type="button" value="Yes" id="yes" style="font-size: xx-large">
+      <input type="button" value="No" id="no" style="font-size: xx-large">
+    </span>
+    <br/>
+    <span id="right" style="visibility: visible; font-size: xx-large; color: green">&#x2713;</span>
+    <span id="wrong" style="visibility: visible; font-size: xx-large; color: red">X</span>
 
-      <div id="tuple">
+    <div id="tuple">
         <img src="https://www.setgame.com/sites/all/modules/setgame_set/assets/images/new/1.png"/>
         <img src="https://www.setgame.com/sites/all/modules/setgame_set/assets/images/new/28.png"/>
         <img src="https://www.setgame.com/sites/all/modules/setgame_set/assets/images/new/55.png"/>
-      </div>
-    </main>
-  </body>
+    </div>
+</main>
+</body>
 </html>
