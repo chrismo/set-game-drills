@@ -107,4 +107,17 @@ export class GameBase {
   unusedElement(ary, valueA, valueB) {
     return ary.filter(value => value !== valueA && value !== valueB)[0];
   }
+
+  renderTuple(tuple, parent, cssClass="") {
+    tuple.forEach(card => {
+      let img = this.document.createElement("img"), plural;
+      img.src = `https://www.setgame.com/sites/all/modules/setgame_set/assets/images/new/${card.imgIndex}.png`;
+      img.className = cssClass;
+      plural = card.number === 1 ? '' : 's';
+      let cardDescription = `${card.number} ${card.color} ${card.fill} ${card.shape}${plural}`;
+      img.alt = cardDescription;
+      img.title = cardDescription;
+      parent.appendChild(img);
+    });
+  }
 }

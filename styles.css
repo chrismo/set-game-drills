@@ -44,3 +44,19 @@ h1 {
   font-weight: bold;
   font-size: 1.5rem;
 }
+
+img.smallCard {
+  width: 5em;
+}
+
+.result {
+  font-size: 5rem;
+}
+
+.inputButton {
+  font-size: x-large;
+}
+
+.padLeft {
+  margin-left: 50px;
+}

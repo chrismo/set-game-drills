@@ -13,18 +13,22 @@
 <main>
     <h1>Set Game Drills</h1>
 
-    <span style="horiz-align: center">
-      <input type="button" value="Yes" id="yes" style="font-size: xx-large">
-      <input type="button" value="No" id="no" style="font-size: xx-large">
-    </span>
-    <br/>
-    <span id="right" style="visibility: visible; font-size: 10rem; color: green">&#x2713;</span>
-    <span id="wrong" style="visibility: visible; font-size: 10rem; color: red">X</span>
+    <div id="board">
+        <span style="horiz-align: center" id="inputs">
+          <input type="button" value="Yes" id="yes" class="inputButton">
+          <input type="button" value="No" id="no" class="inputButton">
+        </span>
+        <br/>
+        <div id="result">
+            <span id="right" class="result" style="visibility: visible; color: green">&#x2713;</span>
+            <span id="wrong" class="result" style="visibility: visible; color: red">X</span>
+        </div>
 
-    <div id="tuple">
-        <img src="https://www.setgame.com/sites/all/modules/setgame_set/assets/images/new/1.png"/>
-        <img src="https://www.setgame.com/sites/all/modules/setgame_set/assets/images/new/28.png"/>
-        <img src="https://www.setgame.com/sites/all/modules/setgame_set/assets/images/new/55.png"/>
+        <div id="tuple">
+            <img src="https://www.setgame.com/sites/all/modules/setgame_set/assets/images/new/1.png"/>
+            <img src="https://www.setgame.com/sites/all/modules/setgame_set/assets/images/new/28.png"/>
+            <img src="https://www.setgame.com/sites/all/modules/setgame_set/assets/images/new/55.png"/>
+        </div>
     </div>
 </main>
 </body>

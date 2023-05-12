@@ -1,7 +1,11 @@
-export class Practice {
+// Maybe use a node package for events?
+export class Practice extends EventTarget {
   currentTuple = [];
+  autoNextTupleOnRight = true;
+  gameIsActive = true;
 
   constructor(base) {
+    super();
     this.base = base;
     this.ui = base.document;
 
@@ -14,13 +18,15 @@ export class Practice {
     this.ui.querySelector('input#no').addEventListener('click', this.no);
 
     this.ui.addEventListener('keypress', (event) => {
-      switch (event.key) {
-        case "y":
-          this.yes();
-          break;
-        case "n":
-          this.no();
-          break;
+      if (this.gameIsActive) {
+        switch (event.key) {
+          case "y":
+            this.yes();
+            break;
+          case "n":
+            this.no();
+            break;
+        }
       }
     });
   }
@@ -34,14 +40,20 @@ export class Practice {
   }
 
   wrong() {
-    this.ui.querySelector("span#right").hidden = true;
-    this.ui.querySelector("span#wrong").hidden = false;
+    // TODO: when practice becomes a choice again to play, fix the score here
+    // this.ui.querySelector("span#right").hidden = true;
+    // this.ui.querySelector("span#wrong").hidden = false;
+    this.dispatchEvent(new Event("wrong"));
   }
 
   right() {
-    this.ui.querySelector("span#right").hidden = false;
-    this.ui.querySelector("span#wrong").hidden = true;
-    this.loadNewTuple();
+    // TODO: when practice becomes a choice again to play, fix the score here
+    // this.ui.querySelector("span#right").hidden = false;
+    // this.ui.querySelector("span#wrong").hidden = true;
+    this.dispatchEvent(new Event("right"));
+    if (this.autoNextTupleOnRight) {
+      this.loadNewTuple();
+    }
   }
 
   loadNewTuple() {
@@ -58,18 +70,6 @@ export class Practice {
       this.currentTuple = indexes.map(cardIndex => this.base.cards[cardIndex]);
     }
 
-    this.renderTuple(div);
-  }
-
-  renderTuple(div) {
-    this.currentTuple.forEach(card => {
-      let img = this.ui.createElement("img"), plural;
-      img.src = `https://www.setgame.com/sites/all/modules/setgame_set/assets/images/new/${card.imgIndex}.png`;
-      plural = card.number === 1 ? '' : 's';
-      let cardDescription = `${card.number} ${card.color} ${card.fill} ${card.shape}${plural}`;
-      img.alt = cardDescription;
-      img.title = cardDescription;
-      div.appendChild(img);
-    });
+    this.base.renderTuple(this.currentTuple, div);
   }
 }
