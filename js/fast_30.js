@@ -1,5 +1,6 @@
 import {Practice} from "./practice.js";
 
+// add timeout to cycle the clock while waiting
 export class Fast30 {
   constructor(base) {
     this.base = base;
@@ -50,11 +51,8 @@ export class Fast30 {
   }
 
   updateUI() {
-    // add timer
-    let timer = this.ui.querySelector('#timer');
-    timer.innerHTML = this.formattedDuration();
+    this.updateTimer();
 
-    // add score
     let rightSpan = `<span style="color: green">&#x2713; ${this.numberRight}</span>`;
     let wrongSpan = `<span style="color: red">X ${this.numberWrong}</span>`;
     this.ui.querySelector('#rightScore').innerHTML = rightSpan;
@@ -101,6 +99,22 @@ export class Fast30 {
 
     this.practice.loadNewTuple();
     this.updateUI();
+
+    this.startTimer();
+  }
+
+  startTimer() {
+    setTimeout(() => {
+      this.updateTimer();
+      if (this.practice.gameIsActive) {
+        this.startTimer();
+      }
+    }, 500);
+  }
+
+  updateTimer() {
+    let timer = this.ui.querySelector('#timer');
+    timer.innerHTML = this.formattedDuration();
   }
 
   endGame() {
