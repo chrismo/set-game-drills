@@ -36,23 +36,22 @@ export class Fast30 {
     rightScore.className = `${scoreClasses} col-3 text-end`;
     score.appendChild(rightScore);
 
-    let wrongScore = this.base.document.createElement("span");
+    let wrongScore = this.base.document.createElement('span');
     wrongScore.id = 'wrongScore';
     wrongScore.className = `${scoreClasses} col-3 text-start`;
     score.appendChild(wrongScore);
 
-    let timer = this.base.document.createElement("span");
-    timer.id = "timer";
+    let timer = this.base.document.createElement('span');
+    timer.id = 'timer';
     timer.className = `${scoreClasses} col-6 text-center`;
-    timer.innerHTML = "0:00";
+    timer.innerHTML = '0:00';
     score.appendChild(timer);
 
-    let history = this.base.document.createElement("div");
-    history.id = "history";
-    history.className = 'row';
+    let history = this.base.document.createElement('div');
+    history.id = 'history';
+    history.className = 'pt-3';
+    history.style.columnCount = '3';
     this.ui.appendChild(history);
-
-
   }
 
   updateUI() {
@@ -69,17 +68,19 @@ export class Fast30 {
     }
     this.history.slice().reverse().forEach(guess => {
       let guessSpan = this.base.document.createElement('span');
-      guessSpan.className = "row";
-      this.base.renderTuple(guess.tuple, guessSpan, "col-4");
+      guessSpan.className = 'row';
+      guessSpan.id = 'guess';
+      this.base.renderTuple(guess.tuple, guessSpan, 'col-3');
 
       let answerSpan = this.base.document.createElement('span');
+      answerSpan.id = 'answer';
+      answerSpan.className = 'col-3 align-middle';
       if (guess.correctAnswer) {
         answerSpan.innerHTML = `<span style="color: green">&#x2713;</span>`;
       } else {
         answerSpan.innerHTML = `<span style="color: red">X</span>`;
       }
       guessSpan.appendChild(answerSpan);
-      guessSpan.appendChild(this.base.document.createElement('br'));
       historyDiv.appendChild(guessSpan);
     });
   }
