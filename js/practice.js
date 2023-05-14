@@ -14,8 +14,8 @@ export class Practice extends EventTarget {
   }
 
   setupUI() {
-    this.ui.querySelector('input#yes').addEventListener('click', this.yes);
-    this.ui.querySelector('input#no').addEventListener('click', this.no);
+    this.ui.querySelector('input#yes').addEventListener('click', () => this.yes());
+    this.ui.querySelector('input#no').addEventListener('click', () => this.no());
 
     this.ui.addEventListener('keypress', (event) => {
       if (this.gameIsActive) {
@@ -70,6 +70,6 @@ export class Practice extends EventTarget {
       this.currentTuple = indexes.map(cardIndex => this.base.cards[cardIndex]);
     }
 
-    this.base.renderTuple(this.currentTuple, div);
+    this.base.renderTuple(this.currentTuple, div, "col-4");
   }
 }
