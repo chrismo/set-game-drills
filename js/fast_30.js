@@ -81,7 +81,7 @@ export class Fast30 {
       let guessSpan = this.base.document.createElement('span');
       guessSpan.className = 'row border rounded-3 p-2';
       guessSpan.id = 'guess';
-      guessSpan.style.backgroundColor = guess.correctAnswer ? "#ddffff" : "#ffddff";
+      guessSpan.style.backgroundColor = guess.correctAnswer ? "#ddffee" : "#ffddee";
 
       this.base.renderTuple(guess.tuple, guessSpan, 'col-4 historyImg');
       historyDiv.appendChild(guessSpan);
