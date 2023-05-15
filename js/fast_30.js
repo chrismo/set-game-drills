@@ -26,7 +26,7 @@ export class Fast30 {
 
     let score = this.base.document.createElement("div");
     score.id = "score";
-    score.className = "row mb-3";
+    score.className = "row p-2";
     divResult.appendChild(score);
 
     let scoreClasses = 'fs-1 fw-bolder';
@@ -47,10 +47,21 @@ export class Fast30 {
     timer.innerHTML = '0:00';
     score.appendChild(timer);
 
+    let historyTitleDiv = this.base.document.createElement('div');
+    historyTitleDiv.className = 'row pt-2 ';
+    this.ui.appendChild(historyTitleDiv);
+
+    let historyTitleText = this.base.document.createElement('span');
+    historyTitleText.innerText = 'history';
+    historyTitleText.className = 'col-12 text-center align-middle bg-secondary text-light';
+    historyTitleDiv.appendChild(historyTitleText);
+
     let history = this.base.document.createElement('div');
     history.id = 'history';
-    history.className = 'pt-3';
-    history.style.columnCount = '3';
+    history.className = 'p-2';
+    history.style.columnCount = 'auto';
+    history.style.columnWidth = '15em';
+    history.style.columnGap = '3em';
     this.ui.appendChild(history);
   }
 
@@ -68,19 +79,11 @@ export class Fast30 {
     }
     this.history.slice().reverse().forEach(guess => {
       let guessSpan = this.base.document.createElement('span');
-      guessSpan.className = 'row';
+      guessSpan.className = 'row border rounded-3 p-2';
       guessSpan.id = 'guess';
-      this.base.renderTuple(guess.tuple, guessSpan, 'col-3');
+      guessSpan.style.backgroundColor = guess.correctAnswer ? "#ddffff" : "#ffddff";
 
-      let answerSpan = this.base.document.createElement('span');
-      answerSpan.id = 'answer';
-      answerSpan.className = 'col-3 align-middle';
-      if (guess.correctAnswer) {
-        answerSpan.innerHTML = `<span style="color: green">&#x2713;</span>`;
-      } else {
-        answerSpan.innerHTML = `<span style="color: red">X</span>`;
-      }
-      guessSpan.appendChild(answerSpan);
+      this.base.renderTuple(guess.tuple, guessSpan, 'col-4 historyImg');
       historyDiv.appendChild(guessSpan);
     });
   }
@@ -133,7 +136,10 @@ export class Fast30 {
       inputElement.removeChild(inputElement.firstChild);
     }
 
-    inputElement.innerHTML = `${this.numberRight} correct and ${this.numberWrong} wrong in ${this.formattedDuration()}<br/>Refresh the page to play again!`;
+    let resultText = this.base.document.createElement('span');
+    resultText.className = 'col-12 text-center';
+    resultText.innerHTML = `${this.numberRight} correct and ${this.numberWrong} wrong in ${this.formattedDuration()}<br/>Refresh the page to play again!`;
+    inputElement.appendChild(resultText);
   }
 
   right() {
