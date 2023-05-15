@@ -1,3 +1,4 @@
+import {GameBase} from './game_base.js'
 import {Practice} from "./practice.js";
 
 // add timeout to cycle the clock while waiting
@@ -180,3 +181,6 @@ class TupleGuess {
     this.correctAnswer = correctAnswer;
   }
 }
+
+let gameBase = new GameBase(document);
+new Fast30(gameBase);
