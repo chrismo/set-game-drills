@@ -2,3 +2,9 @@
     display: block;
     mix-blend-mode: multiply;
 }
+
+.historyColumns {
+    column-count: auto;
+    column-width: 15em;
+    column-gap: 3em;
+}
