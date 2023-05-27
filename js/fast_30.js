@@ -1,7 +1,5 @@
-import {GameBase} from './game_base.js'
 import {Practice} from "./practice.js";
 
-// add timeout to cycle the clock while waiting
 export class Fast30 {
   constructor(base) {
     this.base = base;
@@ -13,61 +11,15 @@ export class Fast30 {
     this.numberRight = 0;
     this.numberWrong = 0;
     this.totalGuesses = 30;
+    this.enableTimer = true;
 
-    this.setupUI();
     this.setupEvents();
-    this.startGame();
-  }
-
-  setupUI() {
-    let divResult = this.ui.querySelector('div#result');
-    while (divResult.firstChild) {
-      divResult.removeChild(divResult.firstChild);
-    }
-
-    let score = this.base.document.createElement("div");
-    score.id = "score";
-    score.className = "row p-2";
-    divResult.appendChild(score);
-
-    let scoreClasses = 'fs-1 fw-bolder';
-
-    let rightScore = this.base.document.createElement("span");
-    rightScore.id = 'rightScore';
-    rightScore.className = `${scoreClasses} col-3 text-end`;
-    score.appendChild(rightScore);
-
-    let wrongScore = this.base.document.createElement('span');
-    wrongScore.id = 'wrongScore';
-    wrongScore.className = `${scoreClasses} col-3 text-start`;
-    score.appendChild(wrongScore);
-
-    let timer = this.base.document.createElement('span');
-    timer.id = 'timer';
-    timer.className = `${scoreClasses} col-6 text-center`;
-    timer.innerHTML = '0:00';
-    score.appendChild(timer);
-
-    let historyTitleDiv = this.base.document.createElement('div');
-    historyTitleDiv.className = 'row pt-2 ';
-    this.ui.appendChild(historyTitleDiv);
-
-    let historyTitleText = this.base.document.createElement('span');
-    historyTitleText.innerText = 'history';
-    historyTitleText.className = 'col-12 text-center align-middle bg-secondary text-light';
-    historyTitleDiv.appendChild(historyTitleText);
-
-    let history = this.base.document.createElement('div');
-    history.id = 'history';
-    history.className = 'p-2';
-    history.style.columnCount = 'auto';
-    history.style.columnWidth = '15em';
-    history.style.columnGap = '3em';
-    this.ui.appendChild(history);
   }
 
   updateUI() {
-    this.updateTimer();
+    if (this.enableTimer) {
+      this.updateTimer();
+    }
 
     let rightSpan = `<span style="color: green">&#x2713;&nbsp;${this.numberRight}</span>`;
     let wrongSpan = `<span style="color: red">X&nbsp;${this.numberWrong}</span>`;
@@ -78,7 +30,7 @@ export class Fast30 {
     while (historyDiv.firstChild) {
       historyDiv.removeChild(historyDiv.firstChild);
     }
-    this.history.slice().reverse().forEach(guess => {
+    this.history.slice(-100).reverse().forEach(guess => {
       let guessSpan = this.base.document.createElement('span');
       guessSpan.className = 'row border rounded-3 p-2';
       guessSpan.id = 'guess';
@@ -111,7 +63,9 @@ export class Fast30 {
     this.practice.loadNewTuple();
     this.updateUI();
 
-    this.startTimer();
+    if (this.enableTimer) {
+      this.startTimer();
+    }
   }
 
   startTimer() {
@@ -181,6 +135,3 @@ class TupleGuess {
     this.correctAnswer = correctAnswer;
   }
 }
-
-let gameBase = new GameBase(document);
-new Fast30(gameBase);
