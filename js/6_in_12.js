@@ -68,23 +68,11 @@ class Board {
     this.cards.push(this.base.makeSet(this.cards[2], this.cards[5])[2]);
 
     this.cards.push(...this.base.makeSet(seedCards[4], seedCards[5]));
-
-    // while (this.cards.length < 12) {
-    //   let seedCardA, seedCardB;
-    //   if (this.cards.length > 0) {
-    //     let indexes = this.base.randomUniqNumbers(0, this.cards.length - 1, 2);
-    //     seedCardA = this.cards[indexes[0]];
-    //     seedCardB = this.cards[indexes[1]];
-    //   }
-    //   let set = this.base.makeSet(seedCardA, seedCardB);
-    //   this.found.push(set);
-    //
-    //   let sliceIdx = (seedCardA === undefined) ? 0 : 2;
-    //   this.cards.push(...set.slice(sliceIdx));
-    // }
   }
 
   setupCards() {
+    // sets need to be intentionally constructed, they don't happen randomly too often
+
     this.base.shuffleCards();
     let deckIndex = 4;
     let seedCards = this.base.cards.slice(0, deckIndex);
@@ -96,31 +84,19 @@ class Board {
 
     // this usually yields 6 sets, but sometimes fewer due to overlap.
     // oy - this is ugly
-    let enoughSets = false;
-    let enoughCards = false;
-    while (!enoughSets || !enoughCards) {
+    while (!this.boardComplete()) {
       this.cards.forEach(cardA => {
-        if (enoughSets) return;
+        if (this.enoughSets()) return;
         this.cards.forEach(cardB => {
-          if (enoughSets) return;
+          if (this.enoughSets()) return;
           if (cardA === cardB) return;
 
           let newSet = this.base.makeSet(cardA, cardB);
           this.pushIfLegal(newSet[2]);
-
-          if (this.solve().length > 6) {
-            console.log("removing last card, too many sets");
-            this.cards = this.cards.slice(0, -2);
-          }
-
-          if (this.solve().length === 6) {
-            console.log("6 sets reached");
-            enoughSets = true;
-          }
         })
       });
 
-      if (!enoughCards) {
+      if (!this.enoughCards()) {
         let pushed = false;
         while (!pushed) {
           let newCard = this.base.cards.slice(deckIndex, ++deckIndex)[0];
@@ -130,19 +106,19 @@ class Board {
           console.log(newCard);
         }
       }
-
-      if (this.solve().length === 6) {
-        console.log("6 sets reached");
-        enoughSets = true;
-      }
-
-      if (this.cards.length === 12) {
-        console.log("12 cards reached");
-        enoughCards = true;
-      }
     }
+  }
 
-    this.found = new Solver(this.base, this.cards).found;
+  boardComplete() {
+    return (this.enoughSets() && this.enoughCards());
+  }
+
+  enoughSets() {
+    return this.found.length === 6;
+  }
+
+  enoughCards() {
+    return this.cards.length === 12;
   }
 
   pushIfLegal(card) {
@@ -157,8 +133,10 @@ class Board {
     if (!cardFound) {
       cloneCards.push(card);
       let foundSets = new Solver(this.base, cloneCards).found
-      if (foundSets.length <= 6) {
+      if ((foundSets.length <= 6) && (cloneCards.length <= 12)) {
         this.cards.push(card);
+        console.log(`${this.cards.length} cards`);
+        this.setFound(foundSets);
         return true;
       } else {
         console.log("card not pushed: would create too many sets");
@@ -169,8 +147,9 @@ class Board {
     return false;
   }
 
-  solve() {
-    return new Solver(this.base, this.cards).found;
+  setFound(sets) {
+    this.found = sets;
+    console.log(`${this.found.length} sets`)
   }
 }
 
