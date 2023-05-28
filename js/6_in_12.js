@@ -1,44 +1,164 @@
+// TODO:
+// - mobile - make sure 6 found all fit on screen
+//   - minimum two wide - cuz one wide is too big
+//   - don't allow on big screen to go 4 wide
+//   - big screen, board pushes solved off the bottom
+
+// - pause and stop to give up
+
 export class SixInTwelve {
   constructor(base) {
     this.base = base;
     this.ui = base.document.querySelector('div#board');
 
     this.board = new Board(this.base);
-
     this.board.setup();
-  }
 
+    this.found = [];
+  }
 
   startGame() {
-    this.updateUI();
+    this.setupEvents();
+
+    this.gameIsActive = true;
+    this.enableTimer = true;
+    this.startTime = Date.now();
+    this.startTimer();
+    this.initUI();
+    if (this.enableTimer) this.updateTimer();
   }
 
-  updateUI() {
+  setupEvents() {
+    this.ui.querySelector('#pause').addEventListener('click', (e) => {
+    });
+    this.ui.querySelector('#stop').addEventListener('click', (e) => {
+      // TODO: fill in missing ones, otherwise the
+      // order of found ones doesn't stay
+      this.found = this.board.found;
+      this.startTime = Date.now() + 2;
+      this.endGame();
+      this.updateUI();
+    });
+  }
+
+  startTimer() {
+    setTimeout(() => {
+      this.updateTimer();
+      if (this.gameIsActive) {
+        this.startTimer();
+      }
+    }, 500);
+  }
+
+  updateTimer() {
+    let timer = this.ui.querySelector('#timer');
+    timer.innerHTML = this.formattedDuration();
+  }
+
+  formattedDuration() {
+    let date = new Date(0);
+    date.setMilliseconds(Date.now() - this.startTime);
+    return date.toISOString().substring(14, 19);
+  }
+
+  initUI() {
     let parent = this.ui.querySelector('div#cards');
     this.board.cards.forEach(card => {
       let img = this.base.document.createElement("img"), plural;
       img.src = `https://www.setgame.com/sites/all/modules/setgame_set/assets/images/new/${card.imgIndex}.png`;
-      img.className = 'col-3';
-      plural = card.number === 1 ? '' : 's';
-      let cardDescription = `${card.number} ${card.color} ${card.fill} ${card.shape}${plural}`;
-      img.alt = cardDescription;
-      img.title = cardDescription;
+      img.className = 'col-3 border rounded-3';
+      img.dataset.selected = "false";
+      img.dataset.imgIndex = card.imgIndex;
+      img.addEventListener('click', (event) => {
+        if (this.gameIsActive) {
+          this.resetAllDangerSelections();
+          img.dataset.selected = img.dataset.selected === "false" ? "true" : "false";
+          if (img.dataset.selected === "true") {
+            img.classList.remove("bg-danger");
+            img.classList.add("bg-primary");
+            img.classList.add("bg-gradient");
+          } else {
+            img.classList.remove("bg-primary");
+            img.classList.remove("bg-gradient");
+          }
+          this.updateGame();
+        }
+      });
+
       parent.appendChild(img);
     });
+  }
 
+  updateGame() {
+    let selected = this.ui.querySelectorAll('img.bg-primary');
+    if (selected.length === 3) {
+      let guess = Array.from(selected).map(element =>
+        this.base.cards[parseInt(element.dataset.imgIndex) - 1]
+      )
+      this.resetAllSelections();
+      if (this.base.tupleIsSet(guess)) {
+        if (!this.base.tupleInArray(guess, this.found)) {
+          this.found.push(guess);
+          if (this.found.length === this.board.found.length) {
+            this.endGame();
+          }
+        } else {
+          // TODO: highlight already found
+        }
+      } else {
+        Array.from(selected).forEach(e => e.classList.add("bg-danger"));
+      }
+    }
+    this.updateUI();
+  }
+
+  resetAllSelections() {
+    let cards = this.ui.querySelectorAll('#cards img');
+
+    Array.from(cards).forEach(
+      e => {
+        e.classList.remove("bg-primary");
+        e.classList.remove("bg-danger");
+        e.dataset.selected = "false";
+      });
+  }
+
+  resetAllDangerSelections() {
+    let cards = this.ui.querySelectorAll('#cards img.bg-danger');
+    Array.from(cards).forEach(e => {
+      e.classList.remove("bg-danger");
+      e.dataset.selected = "false";
+    })
+  }
+
+  updateUI() {
     let foundDiv = this.ui.querySelector('div#history');
     while (foundDiv.firstChild) {
       foundDiv.removeChild(foundDiv.firstChild);
     }
-    this.board.found.slice().reverse().forEach(set => {
+    this.found.slice().reverse().forEach(set => {
       let setSpan = this.base.document.createElement('span');
       setSpan.className = 'row border rounded-3 p-2';
       setSpan.id = 'guess';
       setSpan.style.backgroundColor = "#ddffee";
+      setSpan.addEventListener('mouseover', (event) => {
+        let imgIndexes = set.map(c => c.imgIndex);
+        imgIndexes.forEach(idx => {
+          let e = this.ui.querySelector(`[data-img-index="${idx}"]`)
+          e.classList.add("bg-primary");
+        })
+      })
+      setSpan.addEventListener('mouseout', (event) => {
+        this.resetAllSelections()
+      })
 
       this.base.renderTuple(set, setSpan, 'col-4 historyImg');
       foundDiv.appendChild(setSpan);
     });
+  }
+
+  endGame() {
+    this.gameIsActive = false;
   }
 }
 
@@ -73,9 +193,11 @@ class Board {
   setupCards() {
     // sets need to be intentionally constructed, they don't happen randomly too often
 
-    this.base.shuffleCards();
+    let shuffledCards = this.base.cards.map(c => c);
+    this.base.shuffleArray(shuffledCards);
+
     let deckIndex = 4;
-    let seedCards = this.base.cards.slice(0, deckIndex);
+    let seedCards = shuffledCards.slice(0, deckIndex);
 
     let setA = this.base.makeSet(seedCards[0], seedCards[1]);
     let setB = this.base.makeSet(seedCards[2], seedCards[3]);
@@ -99,8 +221,8 @@ class Board {
       if (!this.enoughCards()) {
         let pushed = false;
         while (!pushed) {
-          let newCard = this.base.cards.slice(deckIndex, ++deckIndex)[0];
-          if (deckIndex > this.base.cards.length - 1) throw "out of cards"
+          let newCard = shuffledCards.slice(deckIndex, ++deckIndex)[0];
+          if (deckIndex > shuffledCards.length - 1) throw "out of cards"
           pushed = this.pushIfLegal(newCard);
           console.log(`new card pushed: ${pushed} deckIndex: ${deckIndex}`);
           console.log(newCard);

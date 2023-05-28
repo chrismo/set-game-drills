@@ -21,8 +21,14 @@
 
         <div id="result">
             <div id="score" class="row p-2">
-                <span id="rightScore" class="fs-1 fw-bolder col-3 text-end"></span>
-                <span id="wrongScore" class="fs-1 fw-bolder col-3 text-start"></span>
+                <span id="rightScore" class="fs-1 fw-bolder col-3 text-end">
+                    <input class="btn btn-primary" type="button" value="stop" id="stop"/>
+
+                </span>
+                <span id="wrongScore" class="fs-1 fw-bolder col-3 text-start">
+                    <input class="btn btn-primary" type="button" disabled value="pause" id="pause"/>
+
+                </span>
                 <span id="timer" class="fs-1 fw-bolder col-6 text-center">0:00</span>
             </div>
         </div>

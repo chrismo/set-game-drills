@@ -52,10 +52,6 @@ export class GameBase {
     return result;
   }
 
-  shuffleCards() {
-    this.shuffleArray(this.cards);
-  }
-
   shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -64,7 +60,7 @@ export class GameBase {
   }
 
   randomTupleIndexes() {
-    return this.randomUniqNumbers(1, 81, 3);
+    return this.randomUniqNumbers(0, 80, 3);
   }
 
   tupleIsSet(tuple) {
