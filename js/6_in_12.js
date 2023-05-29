@@ -8,7 +8,11 @@
 // - pause and
 
 export class SixInTwelve {
-  constructor(base) {
+  constructor(base, boardSeed = undefined) {
+    if (boardSeed === undefined) boardSeed = this.getTodaySeed();
+
+    Math.seedrandom(boardSeed);
+
     this.base = base;
     this.ui = base.document.querySelector('div#board');
 
@@ -16,6 +20,11 @@ export class SixInTwelve {
     this.board.setup();
 
     this.found = [];
+  }
+
+  getTodaySeed() {
+    let date = new Date();
+    return Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDay());
   }
 
   startGame() {
