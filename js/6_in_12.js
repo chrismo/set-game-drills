@@ -1,11 +1,11 @@
 // TODO:
+// - https://github.com/chrismo/set-game-drills/issues/8
 // - mobile - make sure 6 found all fit on screen
 //   - minimum two wide - cuz one wide is too big
 //   - don't allow on big screen to go 4 wide
 //   - big screen, board pushes solved off the bottom
 
 // - pause and
-// - stop to give up
 
 export class SixInTwelve {
   constructor(base) {
@@ -30,11 +30,13 @@ export class SixInTwelve {
   }
 
   setupEvents() {
-    this.ui.querySelector('#pause').addEventListener('click', (e) => {
-    });
-    this.ui.querySelector('#stop').addEventListener('click', (e) => {
-      this.stopGame();
-    });
+    this.ui.querySelector('#pause')
+      .addEventListener('click', (e) => {
+      });
+    this.ui.querySelector('#stop')
+      .addEventListener('click', (e) => {
+        this.stopGame();
+      });
   }
 
   stopGame() {
@@ -176,6 +178,7 @@ export class SixInTwelve {
 
   endGame() {
     this.gameIsActive = false;
+    // - replace stop/pause buttons with new game button at game end
   }
 }
 
