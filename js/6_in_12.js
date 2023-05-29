@@ -138,7 +138,7 @@ export class SixInTwelve {
     }
     this.found.slice().reverse().forEach(set => {
       let setSpan = this.base.document.createElement('span');
-      setSpan.className = 'row border rounded-3 p-2';
+      setSpan.className = 'border rounded-3 col-6';
       setSpan.id = 'guess';
       setSpan.style.backgroundColor = "#ddffee";
       setSpan.addEventListener('mouseover', (event) => {
@@ -152,7 +152,12 @@ export class SixInTwelve {
         this.resetAllSelections()
       })
 
-      this.base.renderTuple(set, setSpan, 'col-4 historyImg');
+      let cardsRow = this.base.document.createElement('div');
+      cardsRow.className = 'row gx-4';
+
+      this.base.renderTuple(set, cardsRow, 'col-4 historyImg');
+      setSpan.appendChild(cardsRow);
+
       foundDiv.appendChild(setSpan);
     });
   }
