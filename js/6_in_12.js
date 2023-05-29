@@ -40,18 +40,20 @@ export class SixInTwelve {
   }
 
   stopGame() {
-    this.board.found.forEach(set => {
-      let playerFoundSet = this.base.findTupleInArray(set, this.found);
-      if (playerFoundSet) {
-        playerFoundSet.correctAnswer = true;
-      } else {
-        set.correctAnswer = false;
-        this.found.push(set);
-      }
-    })
+    if (this.gameIsActive) {
+      this.board.found.forEach(set => {
+        let playerFoundSet = this.base.findTupleInArray(set, this.found);
+        if (playerFoundSet) {
+          playerFoundSet.correctAnswer = true;
+        } else {
+          set.correctAnswer = false;
+          this.found.push(set);
+        }
+      })
 
-    this.endGame();
-    this.updateUI();
+      this.endGame();
+      this.updateUI();
+    }
   }
 
   startTimer() {
@@ -77,29 +79,33 @@ export class SixInTwelve {
   initUI() {
     let parent = this.ui.querySelector('div#cards');
     this.board.cards.forEach(card => {
-      let img = this.base.document.createElement("img"), plural;
+      let img = this.base.document.createElement("img");
       img.src = `https://www.setgame.com/sites/all/modules/setgame_set/assets/images/new/${card.imgIndex}.png`;
       img.className = 'col-3 border rounded-3';
       img.dataset.selected = "false";
       img.dataset.imgIndex = card.imgIndex;
       img.addEventListener('click', (event) => {
-        if (this.gameIsActive) {
-          this.resetAllDangerSelections();
-          img.dataset.selected = img.dataset.selected === "false" ? "true" : "false";
-          if (img.dataset.selected === "true") {
-            img.classList.remove("bg-danger");
-            img.classList.add("bg-primary");
-            img.classList.add("bg-gradient");
-          } else {
-            img.classList.remove("bg-primary");
-            img.classList.remove("bg-gradient");
-          }
-          this.updateGame();
-        }
+        this.cardSelect(img);
       });
 
       parent.appendChild(img);
     });
+  }
+
+  cardSelect(img) {
+    if (this.gameIsActive) {
+      this.resetAllDangerSelections();
+      img.dataset.selected = img.dataset.selected === "false" ? "true" : "false";
+      if (img.dataset.selected === "true") {
+        img.classList.remove("bg-danger");
+        img.classList.add("bg-primary");
+        img.classList.add("bg-gradient");
+      } else {
+        img.classList.remove("bg-primary");
+        img.classList.remove("bg-gradient");
+      }
+      this.updateGame();
+    }
   }
 
   updateGame() {
@@ -117,7 +123,7 @@ export class SixInTwelve {
             this.endGame();
           }
         } else {
-          // TODO: highlight already found
+          // TODO: highlight already found set in that section?
         }
       } else {
         Array.from(selected).forEach(e => e.classList.add("bg-danger"));
