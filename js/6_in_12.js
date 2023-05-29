@@ -4,7 +4,8 @@
 //   - don't allow on big screen to go 4 wide
 //   - big screen, board pushes solved off the bottom
 
-// - pause and stop to give up
+// - pause and
+// - stop to give up
 
 export class SixInTwelve {
   constructor(base) {
@@ -32,13 +33,23 @@ export class SixInTwelve {
     this.ui.querySelector('#pause').addEventListener('click', (e) => {
     });
     this.ui.querySelector('#stop').addEventListener('click', (e) => {
-      // TODO: fill in missing ones, otherwise the
-      // order of found ones doesn't stay
-      this.found = this.board.found;
-      this.startTime = Date.now() + 2;
-      this.endGame();
-      this.updateUI();
+      this.stopGame();
     });
+  }
+
+  stopGame() {
+    this.board.found.forEach(set => {
+      let playerFoundSet = this.base.findTupleInArray(set, this.found);
+      if (playerFoundSet) {
+        playerFoundSet.correctAnswer = true;
+      } else {
+        set.correctAnswer = false;
+        this.found.push(set);
+      }
+    })
+
+    this.endGame();
+    this.updateUI();
   }
 
   startTimer() {
@@ -98,6 +109,7 @@ export class SixInTwelve {
       this.resetAllSelections();
       if (this.base.tupleIsSet(guess)) {
         if (!this.base.tupleInArray(guess, this.found)) {
+          guess.correctAnswer = true;
           this.found.push(guess);
           if (this.found.length === this.board.found.length) {
             this.endGame();
@@ -140,7 +152,7 @@ export class SixInTwelve {
       let setSpan = this.base.document.createElement('span');
       setSpan.className = 'border rounded-3 col-6';
       setSpan.id = 'guess';
-      setSpan.style.backgroundColor = "#ddffee";
+      setSpan.style.backgroundColor = set.correctAnswer ? "#ddffee" : "#ffddee";
       setSpan.addEventListener('mouseover', (event) => {
         let imgIndexes = set.map(c => c.imgIndex);
         imgIndexes.forEach(idx => {

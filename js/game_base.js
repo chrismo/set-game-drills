@@ -143,17 +143,21 @@ export class GameBase {
     })
   }
 
-  tupleInArray(tuple, array) {
+  findTupleInArray(tuple, array) {
     let tupleIdx = tuple.map(card => card.imgIndex).sort();
-    let tupleFound = false;
+    let tupleFound = undefined;
     array.forEach(arrayTuple => {
       let arrayTupleIdx = arrayTuple.map(card => card.imgIndex).sort();
 
       if (JSON.stringify(tupleIdx) === JSON.stringify(arrayTupleIdx)) {
-        tupleFound = true;
+        tupleFound = arrayTuple;
       }
     });
     return tupleFound;
+  }
+
+  tupleInArray(tuple, array) {
+    return this.findTupleInArray(tuple, array) !== undefined;
   }
 }
 
