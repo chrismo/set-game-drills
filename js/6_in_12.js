@@ -73,7 +73,8 @@ export class SixInTwelve {
   formattedDuration() {
     let date = new Date(0);
     date.setMilliseconds(Date.now() - this.startTime);
-    return date.toISOString().substring(14, 19);
+    let end = this.gameIsActive ? 19 : 23;
+    return date.toISOString().substring(14, end);
   }
 
   initUI() {
